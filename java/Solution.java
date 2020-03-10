@@ -1,6 +1,16 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import dto.ProposalDTO;
+import service.PopulationService;
+import service.ValidationService;
 
 public class Solution {
+	
+	private static String PROPOSAL = "proposal";
+	private static ValidationService validationService = new ValidationService();
+	private static PopulationService populationService = new PopulationService();
+	
   // Essa função recebe uma lista de mensagens, por exemplo:
   //
   // [
@@ -13,6 +23,21 @@ public class Solution {
   // Complete a função para retornar uma String com os IDs das propostas válidas no seguinte formato (separado por vírgula):
   // "52f0b3f2-f838-4ce2-96ee-9876dd2c0cf6,51a41350-d105-4423-a9cf-5a24ac46ae84,50cedd7f-44fd-4651-a4ec-f55c742e3477"
   public static String processMessages(List<String> messages) {
-    return "";
+	  List<String> idList = new ArrayList<String>();
+		
+		for (String message : messages) {
+			if (message.contains(PROPOSAL)) {
+				ProposalDTO proposalDTO = populationService.populateProposalDTO(message, messages);
+				boolean isValid = validationService.validateProposal(proposalDTO);
+				
+				if (isValid) {
+					idList.add(proposalDTO.getProposalId());
+				}
+			}
+		}
+	  
+		String response = idList.toString().replace("[", "").replace("]", "").replaceAll(" ", "");
+
+		return response; //Lista de IDs das PROPOSTAS válidas
   }
 }
